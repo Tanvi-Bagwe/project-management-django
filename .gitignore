@@ -12,8 +12,3 @@ db.sqlite3
 
 # Local settings and secrets
 .env
-local_settings.py
-
-# Media and Static
-/media/
-/staticfiles/
