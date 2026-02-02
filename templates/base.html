@@ -31,15 +31,20 @@
 
 <div class="container-fluid">
     <div class="row">
-        {% block sidebar %}
-            {% include "partials/sidebar.html" %}
-        {% endblock %}
 
-        <main class="col-md-9 col-lg-10 px-md-4 py-4">
-            {% block content %}{% endblock %}
+        {% if user.is_authenticated %}
+            {% include "partials/sidebar.html" %}
+            <main class="col-md-9 col-lg-10 px-md-4 py-4">
+        {% else %}
+            <main class="col-12 col-md-8 mx-auto px-md-4 py-4">
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
         </main>
     </div>
 </div>
+
 
 {% include "partials/footer.html" %}
 
