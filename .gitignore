@@ -1,0 +1,19 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Database
+db.sqlite3
+
+# Local settings and secrets
+.env
+local_settings.py
+
+# Media and Static
+/media/
+/staticfiles/
