@@ -1,7 +1,7 @@
-from profile import Profile
-
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+
+from accounts.models.profile import Profile
 
 
 def register(request):
@@ -10,8 +10,8 @@ def register(request):
             username=request.POST['username'],
             email=request.POST['email'],
             password=request.POST['password'],
-            first_name=request.POST.get('first_name'),
-            last_name=request.POST.get('last_name'),
+            first_name=request.POST.get('first_name', ''),
+            last_name=request.POST.get('last_name', '')
         )
 
         Profile.objects.create(
@@ -20,6 +20,6 @@ def register(request):
             role=request.POST.get('role')
         )
 
-        return redirect('login')
+        return redirect('register')
 
     return render(request, 'accounts/register.html')
