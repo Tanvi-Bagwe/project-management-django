@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -6,48 +8,110 @@ from django.views.decorators.csrf import csrf_exempt
 from accounts.models.profile import Profile
 
 
-def register(request):
-    return render(request, 'accounts/register.html')
+# --- 1. VALIDATION SERVICE (Logic Layer) ---
+class RegistrationValidator:
+
+    @staticmethod
+    def validate_names(f_name, l_name):
+        if len(f_name) < 2 or len(l_name) < 2:
+            return "Names must be at least 2 characters long."
+        return None
+
+    @staticmethod
+    def validate_username_pattern(username):
+        # 5-12 chars, alphanumeric
+        if not re.match(r'^[a-zA-Z0-9]{5,12}$', username):
+            return "Username must be 5-12 characters and alphanumeric."
+        return None
+
+    @staticmethod
+    def validate_email_pattern(email):
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
+            return "Invalid email format."
+        return None
+
+    @staticmethod
+    def validate_password_strength(password):
+        # Min 8 chars, 1 letter, 1 number
+        if not re.match(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$', password):
+            return "Password must be at least 8 characters with a letter and a number."
+        return None
+
+    @staticmethod
+    def check_existence(username, email):
+        if User.objects.filter(username=username).exists():
+            return "Username already exists."
+        if User.objects.filter(email=email).exists():
+            return "Email already registered."
+        return None
 
 
-@csrf_exempt  # OK for AJAX during dev
-def register_submit(request):
-    if request.method != "POST":
-        return JsonResponse({"success": False, "message": "Invalid request"}, status=400)
-
-    data = request.POST
-
-    # Backend validations
-    required_fields = ['username', 'email', 'password', 'first_name']
-    for field in required_fields:
-        if not data.get(field):
-            return JsonResponse({
-                "success": False,
-                "message": f"{field.replace('_', ' ').title()} is required"
-            }, status=400)
-
-    if User.objects.filter(username=data['username']).exists():
-        return JsonResponse({"success": False, "message": "Username already exists"}, status=400)
-
-    if User.objects.filter(email=data['email']).exists():
-        return JsonResponse({"success": False, "message": "Email already registered"}, status=400)
-
-    # Create user
+# --- 2. DATABASE SERVICE (Data Layer) ---
+def create_user_account(data):
+    """Handles the actual insertion into the DB"""
     user = User.objects.create_user(
         username=data['username'],
         email=data['email'],
         password=data['password'],
         first_name=data['first_name'],
-        last_name=data.get('last_name', '')
+        last_name=data['last_name']
     )
-
     Profile.objects.create(
         user=user,
         phone=data.get('phone'),
         role=data.get('role', 'member')
     )
+    return user
 
-    return JsonResponse({
-        "success": True,
-        "message": "Registration successful! You can now login."
-    })
+
+# --- 3. THE VIEW (Request/Response Layer) ---
+
+def register(request):
+    return render(request, 'accounts/register.html')
+
+
+@csrf_exempt
+def register_submit(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "Invalid request"}, status=405)
+
+    # Extracting data
+    data = {
+        'first_name': request.POST.get('first_name', '').strip(),
+        'last_name': request.POST.get('last_name', '').strip(),
+        'username': request.POST.get('username', '').strip(),
+        'email': request.POST.get('email', '').strip(),
+        'password': request.POST.get('password', ''),
+        'phone': request.POST.get('phone', ''),
+        'role': request.POST.get('role', 'member')
+    }
+
+    # SEPARATE METHOD CALLS FOR EACH VALIDATION
+    # This fulfills your "modular" requirement perfectly
+
+    # Check Names
+    err = RegistrationValidator.validate_names(data['first_name'], data['last_name'])
+    if err: return JsonResponse({"success": False, "message": err}, status=400)
+
+    # Check Username
+    err = RegistrationValidator.validate_username_pattern(data['username'])
+    if err: return JsonResponse({"success": False, "message": err}, status=400)
+
+    # Check Email
+    err = RegistrationValidator.validate_email_pattern(data['email'])
+    if err: return JsonResponse({"success": False, "message": err}, status=400)
+
+    # Check Password
+    err = RegistrationValidator.validate_password_strength(data['password'])
+    if err: return JsonResponse({"success": False, "message": err}, status=400)
+
+    # Check DB Existence
+    err = RegistrationValidator.check_existence(data['username'], data['email'])
+    if err: return JsonResponse({"success": False, "message": err}, status=400)
+
+    # If all modular checks pass, proceed to creation
+    try:
+        create_user_account(data)
+        return JsonResponse({"success": True, "message": "Account created successfully!"})
+    except Exception as e:
+        return JsonResponse({"success": False, "message": "Database error occurred."}, status=500)
