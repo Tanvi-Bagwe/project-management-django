@@ -1,11 +1,23 @@
 import re
 
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from accounts.models.profile import Profile
+
+
+# --- LOGIN VALIDATOR ---
+
+class LoginValidator:
+
+    @staticmethod
+    def validate_credentials(username, password):
+        if not username or not password:
+            return "Username and password are required."
+        return None
 
 
 # --- 1. VALIDATION SERVICE (Logic Layer) ---
@@ -70,6 +82,10 @@ def register(request):
     return render(request, 'accounts/register.html')
 
 
+def login_page(request):
+    return render(request, "accounts/login.html")
+
+
 @csrf_exempt
 def register_submit(request):
     if request.method != "POST":
@@ -115,3 +131,29 @@ def register_submit(request):
         return JsonResponse({"success": True, "message": "Account created successfully!"})
     except Exception as e:
         return JsonResponse({"success": False, "message": "Database error occurred."}, status=500)
+
+
+@csrf_exempt
+def login_submit(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "Invalid request"}, status=405)
+
+    username = request.POST.get("username", "").strip()
+    password = request.POST.get("password", "").strip()
+
+    err = LoginValidator.validate_credentials(username, password)
+    if err:
+        return JsonResponse({"success": False, "message": err}, status=400)
+
+    user = authenticate(request, username=username, password=password)
+
+    if user is None:
+        return JsonResponse({"success": False, "message": "Invalid username or password"}, status=401)
+
+    login(request, user)
+
+    return JsonResponse({
+        "success": True,
+        "message": "Login successful!",
+        "redirect_url": "/dashboard/"
+    })
