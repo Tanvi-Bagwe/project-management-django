@@ -83,6 +83,9 @@ def register(request):
 
 
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
     return render(request, "accounts/login.html")
 
 
@@ -140,6 +143,13 @@ def register_submit(request):
 
 @csrf_exempt
 def login_submit(request):
+    if request.user.is_authenticated:
+        return JsonResponse({
+            "success": True,
+            "message": "Already logged in",
+            "redirect_url": "/dashboard/"
+        })
+
     if request.method != "POST":
         return JsonResponse({"success": False, "message": "Invalid request"}, status=405)
 
