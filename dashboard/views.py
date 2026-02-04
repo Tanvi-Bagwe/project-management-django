@@ -1,15 +1,25 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from accounts.models.profile import Profile
+from projects.models import Project
+from tasks.models import Task
 
 
 @login_required(login_url="login")
 def dashboard(request):
-    profile = Profile.objects.get(user=request.user)
+    user = request.user
+
+    projects = Project.objects.filter(
+        id__in=Task.objects.filter(assigned_to=user)
+        .values_list("project_id", flat=True)
+        .distinct()
+    )
+
+    tasks = Task.objects.filter(assigned_to=user)
 
     context = {
-        "role": profile.role
+        "projects": projects,
+        "tasks": tasks
     }
 
     return render(request, "dashboard/index.html", context)
