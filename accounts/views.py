@@ -1,9 +1,9 @@
 import re
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from accounts.models.profile import Profile
@@ -84,6 +84,11 @@ def register(request):
 
 def login_page(request):
     return render(request, "accounts/login.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
 
 
 @csrf_exempt
