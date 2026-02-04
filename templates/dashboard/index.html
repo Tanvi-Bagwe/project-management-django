@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h2 class="mb-4">My Projects</h2>
+    <h2 class="mb-4"><i class="bi bi-box-seam me-2"></i>My Projects</h2>
 
     <div class="accordion" id="projectAccordion">
 
@@ -11,6 +11,7 @@
                     <button class="accordion-button collapsed"
                             data-bs-toggle="collapse"
                             data-bs-target="#project{{ project.id }}">
+                        <i class="bi bi-folder-fill me-2 text-primary"></i>
                         {{ project.name }}
                     </button>
                 </h2>
@@ -26,12 +27,25 @@
                                 {% if task.project_id == project.id %}
                                     <li class="list-group-item d-flex justify-content-between">
                                         <div>
-                                            <strong>{{ task.title }}</strong><br>
-                                            <small>Status: {{ task.status }}</small>
+                                            <strong><i class="bi bi-sticky me-1"></i>{{ task.title }}
+                                            </strong><br>
+                                            <small>{% if task.status.code == "todo" %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="bi bi-circle me-1"></i>To Do
+                                                </span>
+                                            {% elif task.status.code == "in_progress" %}
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="bi bi-arrow-repeat me-1"></i>In Progress
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle me-1"></i>Done
+                                                </span>
+                                            {% endif %}</small>
                                         </div>
                                         <span class="badge bg-secondary">
-                  {{ task.priority }}
-                </span>
+                                          {{ task.priority }}
+                                        </span>
                                     </li>
                                 {% endif %}
                             {% empty %}
