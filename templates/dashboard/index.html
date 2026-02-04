@@ -1,10 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-sasasas
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Dashboard | ProManage{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Dashboard</h2>
+
+    {% if role == "admin" %}
+        <div class="alert alert-primary">
+            <h5>Admin Dashboard</h5>
+            <p>You have full system access.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6>Total Users</h6>
+                        <h3>—</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif role == "manager" %}
+        <div class="alert alert-success">
+            <h5>Project Manager Dashboard</h5>
+            <p>Manage your projects and team.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6>My Projects</h6>
+                        <h3>—</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info">
+            <h5>Team Member Dashboard</h5>
+            <p>View your assigned tasks.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6>Assigned Tasks</h6>
+                        <h3>—</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
