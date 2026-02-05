@@ -18,6 +18,10 @@
 
 <script>
     function startChat() {
+        const select = document.getElementById("userSelect");
+        const username =
+            select.options[select.selectedIndex].text;
+
         fetch("{% url 'start_chat' %}", {
             method: "POST",
             headers: {
@@ -25,12 +29,13 @@
                 document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             body: new URLSearchParams({
-                user_id: document.getElementById("userSelect").value
+                user_id: select.value
             })
         })
             .then(res => res.json())
             .then(data => {
-                openChat(data.conversation_id);
+                openChat(data.conversation_id, username);
+
                 bootstrap.Modal.getInstance(
                     document.getElementById("newChatModal")
                 ).hide();

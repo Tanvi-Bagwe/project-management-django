@@ -1,13 +1,23 @@
 let currentConv = null;
 let poller = null;
 
-function openChat(convId) {
+function openChat(convId, username) {
     currentConv = convId;
+
+    // Update header
+    document.getElementById("chatHeader").innerText =
+        "Chatting with " + username;
+
+    // Enable input
+    document.getElementById("msgInput").disabled = false;
+    document.getElementById("sendBtn").disabled = false;
+
     loadMessages();
 
     if (poller) clearInterval(poller);
     poller = setInterval(loadMessages, 30000);
 }
+
 
 function loadMessages() {
     fetch(`/messages/${currentConv}/`)
