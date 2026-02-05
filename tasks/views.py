@@ -64,3 +64,24 @@ def create_task(request):
         "statuses": TaskStatus.objects.all(),
         "priorities": TaskPriority.objects.all()
     })
+
+
+@login_required
+def delete_task(request, task_id):
+    if request.method != "DELETE":
+        return JsonResponse(
+            {"error": "Method not allowed"},
+            status=405
+        )
+
+    task = get_object_or_404(Task, id=task_id)
+
+    # Only manager can delete
+    if request.user.profile.role != "manager":
+        return JsonResponse(
+            {"error": "Unauthorized"},
+            status=403
+        )
+
+    task.delete()
+    return JsonResponse({"success": True})
