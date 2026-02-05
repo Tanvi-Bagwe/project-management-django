@@ -5,21 +5,24 @@ from projects.models import Project
 from tasks.models import Task
 
 
-@login_required(login_url="login")
+@login_required
 def dashboard(request):
-    user = request.user
+    role = request.user.profile.role
 
-    projects = Project.objects.filter(
-        id__in=Task.objects.filter(assigned_to=user)
-        .values_list("project_id", flat=True)
-        .distinct()
-    )
+    if role == "manager":
+        projects = Project.objects.filter(created_by=request.user)
+        return render(request, "dashboard/manager.html", {
+            "projects": projects
+        })
 
-    tasks = Task.objects.filter(assigned_to=user)
+    if role == "member":
+        tasks = Task.objects.filter(assigned_to=request.user)
+        return render(request, "dashboard/member.html", {
+            "tasks": tasks
+        })
 
-    context = {
-        "projects": projects,
-        "tasks": tasks
-    }
-
-    return render(request, "dashboard/index.html", context)
+    # admin
+    projects = Project.objects.all()
+    return render(request, "dashboard/admin.html", {
+        "projects": projects
+    })
