@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h3>
+        <i class="bi bi-list-task me-2"></i>{{ task.title }}
+    </h3>
+
+    <p>{{ task.description }}</p>
+
+    <p>
+        <strong>Assigned By:</strong> {{ task.assigned_by.username }}<br>
+        <strong>Assigned On:</strong> {{ task.assigned_at }}
+    </p>
+
+    <select id="statusSelect" class="form-select w-25">
+        {% for status in statuses %}
+            <option value="{{ status.id }}"
+                    {% if task.status_id == status.id %}selected{% endif %}>
+                {{ status.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button class="btn btn-primary mt-3" onclick="updateStatus()">
+        Update Status
+    </button>
+
+    <script>
+        function updateStatus() {
+            fetch("{% url 'task_status_update' task.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: new URLSearchParams({
+                    status_id: document.getElementById("statusSelect").value
+                })
+            }).then(() => alert("Status updated"));
+        }
+    </script>
+
+{% endblock %}
