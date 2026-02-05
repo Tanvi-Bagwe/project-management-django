@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h4><i class="bi bi-plus-circle me-2"></i>Create Task</h4>
+
+    <form id="taskForm">
+        {% csrf_token %}
+
+        <input class="form-control mb-2" name="title" placeholder="Title">
+        <textarea class="form-control mb-2" name="description"></textarea>
+
+        <select class="form-select mb-2" name="project_id">
+            {% for p in projects %}
+                <option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+        </select>
+
+        <select class="form-select mb-2" name="assigned_to">
+            {% for u in users %}
+                <option value="{{ u.id }}">{{ u.username }}</option>{% endfor %}
+        </select>
+
+        <select class="form-select mb-2" name="status_id">
+            {% for s in statuses %}
+                <option value="{{ s.id }}">{{ s.name }}</option>{% endfor %}
+        </select>
+
+        <select class="form-select mb-2" name="priority_id">
+            {% for p in priorities %}
+                <option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+        </select>
+
+        <button type="button" class="btn btn-success" onclick="createTask()">
+            Create Task
+        </button>
+
+    </form>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="taskModal">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content text-center p-3">
+                <i class="bi bi-check-circle text-success fs-3"></i>
+                <p class="mt-2">Task created successfully</p>
+                <button class="btn btn-primary btn-sm"
+                        data-bs-dismiss="modal"
+                        onclick="location.href='{% url 'dashboard' %}'">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function createTask() {
+            fetch("{% url 'create_task' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: new FormData(document.getElementById("taskForm"))
+            })
+                .then(res => res.json())
+                .then(() => {
+                    new bootstrap.Modal(
+                        document.getElementById("taskModal")
+                    ).show();
+                });
+        }
+    </script>
+
+{% endblock %}
