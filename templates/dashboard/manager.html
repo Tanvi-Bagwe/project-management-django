@@ -4,6 +4,12 @@
     <h4 class="mb-4">
         <i class="bi bi-folder2-open me-2"></i>My Projects
     </h4>
+    <button class="btn btn-success btn-sm mb-3"
+            data-bs-toggle="modal"
+            data-bs-target="#projectModal">
+        <i class="bi bi-plus-circle"></i> New Project
+    </button>
+
 
     <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
         {% for project in projects %}
@@ -31,4 +37,46 @@
         {% endfor %}
     </div>
 
+    <div class="modal fade" id="projectModal">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+
+                <h5>Create Project</h5>
+
+                <form id="projectForm">
+                    {% csrf_token %}
+                    <input class="form-control mb-2" name="name"
+                           placeholder="Project name">
+                    <textarea class="form-control mb-2"
+                              name="description"
+                              placeholder="Description"></textarea>
+
+                    <button type="button"
+                            class="btn btn-primary"
+                            onclick="createProject()">
+                        Create
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function createProject() {
+            fetch("{% url 'create_project' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken":
+                    document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: new FormData(
+                    document.getElementById("projectForm")
+                )
+            })
+                .then(res => res.json())
+                .then(data => {
+                    window.location.reload();
+                });
+        }
+    </script>
 {% endblock %}
