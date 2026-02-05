@@ -25,6 +25,21 @@
         Update Status
     </button>
 
+    <div class="modal fade" id="statusModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <i class="bi bi-check-circle text-success fs-3"></i>
+                    <p class="mt-2">Task status updated</p>
+                    <button class="btn btn-primary btn-sm" data-bs-dismiss="modal">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         function updateStatus() {
             fetch("{% url 'task_status_update' task.id %}", {
@@ -35,7 +50,13 @@
                 body: new URLSearchParams({
                     status_id: document.getElementById("statusSelect").value
                 })
-            }).then(() => alert("Status updated"));
+            })
+                .then(res => res.json())
+                .then(() => {
+                    new bootstrap.Modal(
+                        document.getElementById("statusModal")
+                    ).show();
+                });
         }
     </script>
 
