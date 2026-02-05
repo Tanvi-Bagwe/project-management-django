@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h4>
+        <i class="bi bi-kanban me-2"></i>{{ project.name }}
+    </h4>
+
+    <button class="btn btn-success btn-sm mb-3"
+            data-bs-toggle="modal"
+            data-bs-target="#taskModal">
+        <i class="bi bi-plus-circle"></i> Add Task
+    </button>
+
+    <ul class="list-group">
+        {% for task in tasks %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ task.title }}
+                <span class="badge bg-secondary">{{ task.status.name }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% include "tasks/task_modal.html" %}
+
+{% endblock %}
