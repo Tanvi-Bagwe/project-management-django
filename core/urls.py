@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('', include('dashboard.urls')),
     path('', include('tasks.urls')),
+    path('', include('projects.urls')),
 ]
