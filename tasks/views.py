@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.timezone import now
 
-from .models import Task, TaskStatus
+from projects.models import Project
+from .models import Task, TaskStatus, TaskPriority
 
 
 @login_required
@@ -35,3 +38,29 @@ def update_task_status(request, task_id):
 
         return JsonResponse({"success": True})
     return None
+
+
+@login_required
+def create_task(request):
+    if request.user.profile.role != "manager":
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+
+    if request.method == "POST":
+        Task.objects.create(
+            project_id=request.POST["project_id"],
+            title=request.POST["title"],
+            description=request.POST["description"],
+            assigned_to_id=request.POST["assigned_to"],
+            assigned_by=request.user,
+            status_id=request.POST["status_id"],
+            priority_id=request.POST["priority_id"],
+            assigned_at=now()
+        )
+        return JsonResponse({"success": True})
+
+    return render(request, "tasks/create.html", {
+        "projects": Project.objects.all(),
+        "users": User.objects.filter(is_active=True),
+        "statuses": TaskStatus.objects.all(),
+        "priorities": TaskPriority.objects.all()
+    })
