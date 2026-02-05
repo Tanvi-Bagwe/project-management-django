@@ -1,0 +1,39 @@
+<div class="modal fade" id="newChatModal">
+    <div class="modal-dialog">
+        <div class="modal-content p-3">
+
+            <h6>Start New Chat</h6>
+
+            <select id="userSelect" class="form-select mb-2">
+                {% for u in users %}
+                    <option value="{{ u.id }}">{{ u.username }}</option>
+                {% endfor %}
+            </select>
+
+            <button class="btn btn-primary" onclick="startChat()">Start</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function startChat() {
+        fetch("{% url 'start_chat' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken":
+                document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: new URLSearchParams({
+                user_id: document.getElementById("userSelect").value
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                openChat(data.conversation_id);
+                bootstrap.Modal.getInstance(
+                    document.getElementById("newChatModal")
+                ).hide();
+            });
+    }
+</script>

@@ -7,4 +7,5 @@ urlpatterns = [
     path('', include('dashboard.urls')),
     path('', include('tasks.urls')),
     path('', include('projects.urls')),
+    path('', include('messaging.urls')),
 ]
