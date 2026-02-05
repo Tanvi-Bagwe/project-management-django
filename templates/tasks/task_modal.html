@@ -1,0 +1,107 @@
+<div class="modal fade" id="taskModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle me-2"></i>Create Task
+                </h5>
+                <button class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <form id="taskForm">
+                    {% csrf_token %}
+
+                    <!-- Project (read-only) -->
+                    <div class="mb-2">
+                        <label class="form-label">Project</label>
+                        <input class="form-control" value="{{ project.name }}" disabled>
+                        <input type="hidden" name="project_id" value="{{ project.id }}">
+                    </div>
+
+                    <input class="form-control mb-2" name="title" placeholder="Task title">
+
+                    <textarea class="form-control mb-2"
+                              name="description"
+                              placeholder="Task description"></textarea>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Assign To</label>
+                            <select class="form-select" name="assigned_to">
+                                {% for u in users %}
+                                    <option value="{{ u.id }}">{{ u.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status_id">
+                                {% for s in statuses %}
+                                    <option value="{{ s.id }}">{{ s.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-2">
+                            <label class="form-label">Priority</label>
+                            <select class="form-select" name="priority_id">
+                                {% for p in priorities %}
+                                    <option value="{{ p.id }}">{{ p.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel
+                </button>
+
+                <button class="btn btn-success"
+                        onclick="createTask()">
+                    Create Task
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    function createTask() {
+        const modalElement = document.getElementById("taskModal");
+        const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+        fetch("{% url 'create_task' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: new FormData(document.getElementById("taskForm"))
+        })
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                // 1. Hide the modal
+                modalInstance.hide();
+
+                // 2. Optional: Reset the form so it's clean for the next time
+                document.getElementById("taskForm").reset();
+
+                // 3. Optional: Refresh the page or update the UI
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Something went wrong!");
+            });
+    }
+</script>
