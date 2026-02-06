@@ -161,6 +161,16 @@ def login_submit(request):
     if err:
         return JsonResponse({"success": False, "message": err}, status=400)
 
+    try:
+        user_check = User.objects.get(username=username)
+        if not user_check.is_active:
+            return JsonResponse({
+                "success": False,
+                "message": "This account has been disabled. Please contact the system administrator."
+            }, status=403)
+    except User.DoesNotExist:
+        pass
+
     user = authenticate(request, username=username, password=password)
 
     if user is None:
