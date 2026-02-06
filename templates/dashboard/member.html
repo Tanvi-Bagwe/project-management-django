@@ -20,13 +20,19 @@
                         <p class="text-muted small mb-2">
                             <i class="bi bi-folder me-1"></i>{{ task.project.name }}
                         </p>
+                        {% if task.due_date %}
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i>
+                                {{ task.due_date }}
+                            </small>
+                        {% endif %}
 
                         <span class="badge
-          {% if task.status.code == 'todo' %}bg-secondary
-          {% elif task.status.code == 'in_progress' %}bg-warning text-dark
-          {% else %}bg-success{% endif %}">
-          {{ task.status.name }}
-        </span>
+                          {% if task.status.code == 'todo' %}bg-secondary
+                          {% elif task.status.code == 'in_progress' %}bg-warning text-dark
+                          {% else %}bg-success{% endif %}">
+                          {{ task.status.name }}
+                        </span>
                     </div>
 
                 </div>

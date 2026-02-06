@@ -54,6 +54,7 @@ def create_task(request):
             assigned_by=request.user,
             status_id=request.POST["status_id"],
             priority_id=request.POST["priority_id"],
+            due_date=request.POST.get("due_date") or None,
             assigned_at=now()
         )
         return JsonResponse({"success": True})
