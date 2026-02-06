@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.http import require_http_methods
 
 from projects.models import Project
 from tasks.models import Task, TaskStatus, TaskPriority
@@ -50,3 +51,16 @@ def admin_projects(request):
     return render(request, "projects/admin_projects.html", {
         "projects": projects
     })
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
+    if request.user != project.created_by and not request.user.is_superuser:
+        return JsonResponse({"success": False, "message": "Unauthorized"}, status=403)
+
+    project.delete()
+
+    return JsonResponse({"success": True, "message": "Project deleted successfully"})
