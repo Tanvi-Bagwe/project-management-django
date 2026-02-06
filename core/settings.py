@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',  # The one you reset via pgAdmin
+        'PASSWORD': 'postgres',
         'HOST': '127.0.0.1',
         'PORT': '5454',
         'OPTIONS': {
