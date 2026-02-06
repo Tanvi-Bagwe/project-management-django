@@ -35,5 +35,6 @@ urlpatterns = [
          name="password_reset_complete"),
 
     path("users/", admin_users, name="admin_users"),
+
     path("users/<int:user_id>/toggle/", toggle_user, name="toggle_user"),
 ]
