@@ -39,3 +39,14 @@ def create_project(request):
             "project_id": project.id
         })
     return None
+
+
+@login_required
+def admin_projects(request):
+    if not request.user.is_superuser:
+        return render(request, "403.html")
+
+    projects = Project.objects.all().order_by("-created_at")
+    return render(request, "projects/admin_projects.html", {
+        "projects": projects
+    })
