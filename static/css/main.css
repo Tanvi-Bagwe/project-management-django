@@ -1,0 +1,54 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+#sidebarMenu .nav-link {
+    padding: 10px 16px;
+}
+
+#sidebarMenu .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.accordion-button {
+    font-weight: 600;
+}
+
+.list-group-item {
+    display: flex;
+    align-items: center;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s ease;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.max-width-400 {
+    max-width: 400px;
+}
+
+.max-width-200 {
+    max-width: 200px;
+}
+
+.background-white-shade {
+    background: #f8f9fa;
+}
+
+.task-assigned-to {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+}

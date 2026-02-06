@@ -8,9 +8,9 @@
     <div class="row">
         {% for task in tasks %}
             <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card shadow-sm h-100 task-card"
+                <div class="card shadow-sm h-100 task-card cursor-pointer"
                      onclick="location.href='{% url 'task_detail' task.id %}'"
-                     style="cursor:pointer;">
+                >
 
                     <div class="card-body">
                         <h6 class="card-title">

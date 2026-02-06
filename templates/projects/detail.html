@@ -28,13 +28,11 @@
                     <tr>
                         <td>
                             <div class="fw-bold">{{ task.title }}</div>
-                            <div class="small text-muted text-truncate"
-                                 style="max-width: 200px;">{{ task.description }}</div>
+                            <div class="small text-muted text-truncate max-width-200">{{ task.description }}</div>
                         </td>
                         <td>
                             <div class="d-flex align-items-center">
-                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2"
-                                     style="width: 24px; height: 24px; font-size: 10px;">
+                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-2 task-assigned-to">
                                     {{ task.assigned_to.username|slice:":1"|upper }}
                                 </div>
                                 {{ task.assigned_to.username }}
