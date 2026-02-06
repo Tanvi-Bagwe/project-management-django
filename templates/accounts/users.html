@@ -10,22 +10,35 @@
             <div class="col-md-3 mb-3">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h6>{{ u.username }}</h6>
-
-                        <span class="badge
-          {% if u.profile.role == 'manager' %}bg-warning
-          {% else %}bg-info{% endif %}">
-          {{ u.profile.role }}
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6 class="mb-0">{{ u.username }}</h6>
+                            <span class="badge {% if u.profile.role == 'manager' %}bg-warning{% else %}bg-info{% endif %}">
+            {{ u.profile.role|capfirst }}
         </span>
+                        </div>
 
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-secondary"
+                        <p class="mb-1 fw-bold">
+                            {% if u.first_name or u.last_name %}
+                                {{ u.first_name }} {{ u.last_name }}
+                            {% else %}
+                                <span class="text-muted small italic">No name provided</span>
+                            {% endif %}
+                        </p>
+
+                        <div class="text-muted small">
+                            <div class="mb-1">
+                                <i class="bi bi-envelope me-1"></i> {{ u.email|default:"No email" }}
+                            </div>
+                            <div>
+                                <i class="bi bi-calendar3 me-1"></i> Joined: {{ u.date_joined|date:"M d, Y" }}
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <button class="btn btn-sm w-100 {% if u.is_active %}btn-outline-danger{% else %}btn-outline-success{% endif %}"
                                     onclick="showConfirmModal({{ u.id }})">
-                                {% if u.is_active %}
-                                    Disable
-                                {% else %}
-                                    Enable
-                                {% endif %}
+                                <i class="bi bi-power me-1"></i>
+                                {% if u.is_active %}Disable Account{% else %}Enable Account{% endif %}
                             </button>
                         </div>
                     </div>
