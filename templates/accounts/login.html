@@ -20,12 +20,17 @@
 
                         <div class="mb-3">
                             <label class="form-label">Username</label>
-                            <input name="username" class="form-control" required>
+                            <input name="username" class="form-control" required placeholder="Enter username only">
+
+                            <small class="text-muted">
+                                Login works only with username (not email)
+                            </small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input name="password" type="password" class="form-control" required>
+                            <input name="password" type="password" class="form-control"
+                                   required>
                         </div>
 
                         <button id="submitBtn" type="submit" class="btn btn-primary w-100">
