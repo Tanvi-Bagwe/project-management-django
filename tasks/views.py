@@ -61,7 +61,7 @@ def create_task(request):
 
     return render(request, "tasks/create.html", {
         "projects": Project.objects.all(),
-        "users": User.objects.filter(is_active=True),
+        "users": User.objects.filter(is_active=True, profile__role="member"),
         "statuses": TaskStatus.objects.all(),
         "priorities": TaskPriority.objects.all()
     })

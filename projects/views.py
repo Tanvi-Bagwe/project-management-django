@@ -16,7 +16,7 @@ def project_detail(request, project_id):
     return render(request, "projects/detail.html", {
         "project": project,
         "tasks": tasks,
-        "users": User.objects.filter(is_active=True),
+        "users": User.objects.filter(is_active=True, profile__role="member"),
         "statuses": TaskStatus.objects.all(),
         "priorities": TaskPriority.objects.all()
     })
