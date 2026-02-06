@@ -28,18 +28,27 @@ def create_project(request):
     if request.user.profile.role != "manager":
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
+    name = request.POST.get("name", "").strip()
+    description = request.POST.get("description", "").strip()
+
+    if not name or not description:
+        return JsonResponse({
+            "success": False,
+            "message": "Project name and description are required."
+        }, status=400)
+
     if request.method == "POST":
         project = Project.objects.create(
-            name=request.POST["name"],
-            description=request.POST["description"],
+            name=name,
+            description=description,
             created_by=request.user,
-            status_id=1  # active
+            status_id=1
         )
         return JsonResponse({
             "success": True,
             "project_id": project.id
         })
-    return None
+    return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
 @login_required
