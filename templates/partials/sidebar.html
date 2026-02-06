@@ -17,15 +17,15 @@
 
             {% if user.profile.role == "admin" %}
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#">
+                    <a class="nav-link text-white" href="/users">
                         <i class="bi bi-people me-2"></i>User Management
                     </a>
                 </li>
             {% endif %}
 
-            {% if user.profile.role in "admin manager" %}
+            {% if user.profile.role == "admin" %}
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="#">
+                    <a class="nav-link text-white" href="/projects/admin">
                         <i class="bi bi-folder2-open me-2"></i>Projects
                     </a>
                 </li>
@@ -36,24 +36,6 @@
                     <i class="bi bi-chat-dots me-2"></i>Messages
                 </a>
             </li>
-
-            {% if request.user.is_superuser %}
-                <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="bi bi-folder"></i> Projects
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="bi bi-people"></i> Users
-                    </a>
-                </li>
-            {% endif %}
 
         </ul>
     </div>

@@ -1,6 +1,7 @@
 import re
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -172,3 +173,26 @@ def login_submit(request):
         "message": "Login successful!",
         "redirect_url": "/dashboard/"
     })
+
+
+@login_required
+def admin_users(request):
+    if not request.user.is_superuser:
+        return render(request, "403.html")
+
+    users = User.objects.select_related("profile")
+    return render(request, "accounts/users.html", {
+        "users": users
+    })
+
+
+@login_required
+def toggle_user(request, user_id):
+    if request.method != "POST" or not request.user.is_superuser:
+        return JsonResponse({"error": "Unauthorized"}, status=403)
+
+    user = User.objects.get(id=user_id)
+    user.is_active = not user.is_active
+    user.save()
+
+    return JsonResponse({"success": True})

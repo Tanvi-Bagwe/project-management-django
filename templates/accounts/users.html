@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h5 class="mb-3">
+        <i class="bi bi-people"></i> Users
+    </h5>
+
+    <div class="row">
+        {% for u in users %}
+            <div class="col-md-3 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6>{{ u.username }}</h6>
+
+                        <span class="badge
+          {% if u.profile.role == 'manager' %}bg-warning
+          {% else %}bg-info{% endif %}">
+          {{ u.profile.role }}
+        </span>
+
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="toggleUser({{ u.id }})">
+                                {% if u.is_active %}
+                                    Disable
+                                {% else %}
+                                    Enable
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleUser(id) {
+            fetch(`/users/${id}/toggle/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            }).then(() => location.reload());
+        }
+    </script>
+
+{% endblock %}
