@@ -11,6 +11,7 @@
 
             <div class="modal-body">
                 <form id="taskForm">
+                    <div id="alertBox"></div>
                     {% csrf_token %}
 
                     <!-- Project (read-only) -->
@@ -79,8 +80,23 @@
 </div>
 <script>
     function createTask() {
+        const alertBox = document.getElementById("alertBox");
+        alertBox.innerHTML = "";
+
+        const form = document.getElementById("taskForm");
+        const formData = new FormData(form);
+
         const modalElement = document.getElementById("taskModal");
         const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+        const title = formData.get("title").trim();
+        const description = formData.get("description").trim();
+        const project = formData.get("project_id");
+
+        if (!title || !description || !project) {
+            showAlert("warning", "Please provide a title & description");
+            return;
+        }
 
         fetch("{% url 'create_task' %}", {
             method: "POST",
@@ -96,18 +112,24 @@
                 throw new Error('Network response was not ok.');
             })
             .then(data => {
-                // 1. Hide the modal
                 modalInstance.hide();
 
-                // 2. Optional: Reset the form so it's clean for the next time
                 document.getElementById("taskForm").reset();
 
-                // 3. Optional: Refresh the page or update the UI
                 window.location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("Something went wrong!");
+                showAlert("danger", error.message);
             });
+    }
+
+    function showAlert(type, message) {
+        document.getElementById("alertBox").innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
     }
 </script>

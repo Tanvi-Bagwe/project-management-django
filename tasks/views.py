@@ -46,10 +46,20 @@ def create_task(request):
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     if request.method == "POST":
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
+        project_id = request.POST.get("project_id")
+
+        if not title or not description or not project_id:
+            return JsonResponse({
+                "success": False,
+                "message": "Title, Description, and Project are required."
+            }, status=400)
+        
         Task.objects.create(
-            project_id=request.POST["project_id"],
-            title=request.POST["title"],
-            description=request.POST["description"],
+            project_id=project_id,
+            title=title,
+            description=description,
             assigned_to_id=request.POST["assigned_to"],
             assigned_by=request.user,
             status_id=request.POST["status_id"],
