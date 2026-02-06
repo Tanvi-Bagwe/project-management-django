@@ -71,7 +71,7 @@ def create_user_account(data):
     Profile.objects.create(
         user=user,
         phone=data.get('phone'),
-        role=data.get('role', 'member')
+        role=data.get('role', data['role'])
     )
     return user
 
@@ -107,7 +107,7 @@ def register_submit(request):
         'email': request.POST.get('email', '').strip(),
         'password': request.POST.get('password', ''),
         'phone': request.POST.get('phone', ''),
-        'role': request.POST.get('role', 'member')
+        'role': request.POST.get('role', '')
     }
 
     # SEPARATE METHOD CALLS FOR EACH VALIDATION
