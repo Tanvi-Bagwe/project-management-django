@@ -37,6 +37,24 @@
                 </a>
             </li>
 
+            {% if request.user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="bi bi-folder"></i> Projects
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="bi bi-people"></i> Users
+                    </a>
+                </li>
+            {% endif %}
+
         </ul>
     </div>
 </aside>
