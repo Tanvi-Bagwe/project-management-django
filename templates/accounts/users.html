@@ -13,8 +13,8 @@
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6 class="mb-0">{{ u.username }}</h6>
                             <span class="badge {% if u.profile.role == 'manager' %}bg-warning{% else %}bg-info{% endif %}">
-            {{ u.profile.role|capfirst }}
-        </span>
+                                {{ u.profile.role|capfirst }}
+                            </span>
                         </div>
 
                         <p class="mb-1 fw-bold">
