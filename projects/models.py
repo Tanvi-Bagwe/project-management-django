@@ -21,7 +21,7 @@ class Project(models.Model):
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, db_column="created_by")
     status = models.ForeignKey(ProjectStatus, on_delete=models.DO_NOTHING)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = False
