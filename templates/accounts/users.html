@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-
+    {% csrf_token %}
     <h5 class="mb-3">
         <i class="bi bi-people"></i> Users
     </h5>
@@ -63,36 +64,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let selectedUserId = null;
-        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-
-        function showConfirmModal(id) {
-            selectedUserId = id;
-            confirmModal.show();
-        }
-
-        document.getElementById("confirmBtn").onclick = function () {
-            if (selectedUserId) {
-                toggleUser(selectedUserId);
-            }
-        };
-
-        function toggleUser(id) {
-            fetch(`/users/${id}/toggle/`, {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                }
-            }).then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert("Error updating user.");
-                }
-            });
-        }
-    </script>
-
+    <script src="{% static 'js/user_management.js' %}"></script>
 {% endblock %}
