@@ -183,7 +183,7 @@ def admin_users(request):
         return render(request, "403.html")
 
     # select_related avoids the "N+1" problem by joining Profile to User
-    users = User.objects.select_related("profile").all()
+    users = User.objects.select_related("profile").exclude(profile__role='admin')
     return render(request, "accounts/users.html", {"users": users})
 
 
