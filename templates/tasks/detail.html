@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
     <h3>
@@ -13,7 +14,9 @@
         <strong>Due Date:</strong> {{ task.due_date }}
     </p>
 
-    <select id="statusSelect" class="form-select w-25">
+    <select id="statusSelect" class="form-select w-25"
+            data-url="{% url 'task_status_update' task.id %}"
+            data-csrf="{{ csrf_token }}">
         {% for status in statuses %}
             <option value="{{ status.id }}"
                     {% if task.status_id == status.id %}selected{% endif %}>
@@ -39,26 +42,5 @@
             </div>
         </div>
     </div>
-
-
-    <script>
-        function updateStatus() {
-            fetch("{% url 'task_status_update' task.id %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-                body: new URLSearchParams({
-                    status_id: document.getElementById("statusSelect").value
-                })
-            })
-                .then(res => res.json())
-                .then(() => {
-                    new bootstrap.Modal(
-                        document.getElementById("statusModal")
-                    ).show();
-                });
-        }
-    </script>
-
+    <script src="{% static 'js/task_status.js' %}"></script>
 {% endblock %}
