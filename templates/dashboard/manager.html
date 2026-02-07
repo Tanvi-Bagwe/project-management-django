@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
@@ -59,7 +61,7 @@
 
                 <h5>Create Project</h5>
 
-                <form id="projectForm">
+                <form id="projectForm" data-url="{% url 'create_project' %}">
                     <div id="alertBox"></div>
                     {% csrf_token %}
                     <input class="form-control mb-2" name="name"
@@ -78,55 +80,5 @@
             </div>
         </div>
     </div>
-    <script>
-        function createProject() {
-            const alertBox = document.getElementById("alertBox");
-            alertBox.innerHTML = "";
-
-            const form = document.getElementById("projectForm");
-            const formData = new FormData(form);
-
-            const name = formData.get("name").trim();
-            const description = formData.get("description").trim();
-
-
-            if (!name || !description) {
-
-                showAlert("warning", "Please fill in both the project name and description.");
-                return;
-            }
-
-            fetch("{% url 'create_project' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: formData
-            })
-                .then(res => {
-                    if (!res.ok) {
-
-                        return res.json().then(data => {
-                            throw new Error(data.message)
-                        });
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    window.location.reload();
-                })
-                .catch(err => {
-                    showAlert("danger", err.message);
-                });
-        }
-
-        function showAlert(type, message) {
-            document.getElementById("alertBox").innerHTML = `
-            <div class="alert alert-${type} alert-dismissible fade show">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        }
-    </script>
+    <script src="{% static 'js/project_dashboard.js' %}"></script>
 {% endblock %}
