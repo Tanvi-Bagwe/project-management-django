@@ -7,7 +7,7 @@
 **This project contains strict business logic and security protocols. Please review the linked manual first for testing
 credentials and deployment architecture.**
 
-![img_1.png](img_1.png)
+![img_3.png](img_3.png)
 ---
 
 ## 🛡️ Executive Summary of Business Rules
