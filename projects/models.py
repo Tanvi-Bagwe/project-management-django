@@ -26,3 +26,7 @@ class Project(models.Model):
     class Meta:
         managed = False
         db_table = "projects"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
