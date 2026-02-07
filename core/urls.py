@@ -14,7 +14,7 @@ def root_redirect(request):
     return render(request, "landing.html")
 
 
-def test_smtp():
+def test_smtp(request):
     # 1. Pull the variables (Exactly how Django sees them)
     host = os.getenv('EMAIL_HOST')
     port = os.getenv('EMAIL_PORT')
