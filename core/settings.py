@@ -98,7 +98,7 @@ DATABASES = {
 }
 
 DATABASES['default']['OPTIONS'] = {
-    'options': '-c search_path=project_management,public'
+    'options': '-c search_path=project_management'
 }
 
 # Password validation
