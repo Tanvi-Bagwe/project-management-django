@@ -77,7 +77,24 @@
 
         </div>
     </div>
+    <div class="modal fade" id="newChatModal">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
 
-    {% include "messages/new_chat_modal.html" %}
+                <h6>Start New Chat</h6>
+
+                <select id="userSelect" class="form-select mb-2" data-url="{% url 'start_chat' %}">
+                    {% for u in users %}
+                        <option value="{{ u.id }}">{{ u.username }}</option>
+                    {% endfor %}
+                </select>
+
+                <button class="btn btn-primary" onclick="startChat()">Start</button>
+
+            </div>
+        </div>
+    </div>
     <script src="{% static 'js/messages/chat.js' %}"></script>
+
+
 {% endblock %}
