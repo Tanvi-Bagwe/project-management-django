@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
     <h4><i class="bi bi-plus-circle me-2"></i>Create Task</h4>
 
-    <form id="taskForm">
+    <form id="taskForm" data-url="{% url 'create_task' %}">
         <div id="alertBox"></div>
         {% csrf_token %}
 
@@ -51,54 +52,6 @@
         </div>
     </div>
 
-    <script>
-        function createTask() {
-            const alertBox = document.getElementById("alertBox");
-            alertBox.innerHTML = "";
-
-            const form = document.getElementById("taskForm");
-            const formData = new FormData(form);
-
-            const title = formData.get("title").trim();
-            const description = formData.get("description").trim();
-            const project = formData.get("project_id");
-
-            if (!title || !description || !project) {
-                showAlert("warning", "Please provide a title, description, and select a project.");
-                return;
-            }
-
-            fetch("{% url 'create_task' %}", {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: formData
-            })
-                .then(res => {
-                    if (!res.ok) {
-                        return res.json().then(data => {
-                            throw new Error(data.message)
-                        });
-                    }
-                    return res.json();
-                })
-                .then(data => {
-                    new bootstrap.Modal(document.getElementById("taskModal")).show();
-                })
-                .catch(err => {
-                    showAlert("danger", err.message);
-                });
-        }
-
-        function showAlert(type, message) {
-            document.getElementById("alertBox").innerHTML = `
-            <div class="alert alert-${type} alert-dismissible fade show">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-        }
-    </script>
+    <script src="{% static 'js/task_management.js' %}"></script>
 
 {% endblock %}
