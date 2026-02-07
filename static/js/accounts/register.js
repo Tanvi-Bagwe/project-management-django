@@ -103,6 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     showAlert("success", data.message);
                     form.reset();
+                    setTimeout(() => {
+                        window.location.href = '/login/';
+                    }, 1000);
                 } else {
                     showAlert("danger", data.message);
                 }
