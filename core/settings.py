@@ -151,8 +151,9 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 ADMINS = [('Tanvi Bagwe', 'tanvibagwe97@gmail.com')]
 
+# Comment if running locally
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+# Comment if running locally
 SECURE_SSL_REDIRECT = True
 
 # Ensure your logging is set up (Django does some of this by default)
