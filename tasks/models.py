@@ -51,6 +51,10 @@ class Task(models.Model):
     due_date = models.DateField(null=True)
     completed_at = models.DateTimeField(null=True)
 
+    def __str__(self):
+        return f"{self.title} ({self.project.name})"
+
     class Meta:
         managed = False
         db_table = "tasks"
+        ordering = ['-assigned_at']
