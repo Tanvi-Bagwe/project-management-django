@@ -1,8 +1,10 @@
 import re
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordResetView
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -198,3 +200,19 @@ def toggle_user(request, user_id):
     user.save()
 
     return JsonResponse({"success": True})
+
+
+class CustomPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        email = form.cleaned_data.get('email')
+        if not User.objects.filter(email=email).exists():
+            # Add a custom error message
+            messages.warning(self.request, f"No account found with the email: {email}")
+            return self.render_to_response(self.get_context_data(form=form))
+
+        user = User.objects.filter(email=email).first()
+        if user.is_superuser:
+            messages.error(self.request, f"Admin passwords cannot be reset via this form.")
+            return self.render_to_response(self.get_context_data(form=form))
+
+        return super().form_valid(form)

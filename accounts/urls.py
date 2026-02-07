@@ -1,7 +1,8 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from .views import register, register_submit, login_submit, login_page, logout_view, admin_users, toggle_user
+from .views import register, register_submit, login_submit, login_page, logout_view, admin_users, toggle_user, \
+    CustomPasswordResetView
 
 urlpatterns = [
     path("register/", register, name="register"),
@@ -11,7 +12,7 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"),
 
     path("password-reset/",
-         auth_views.PasswordResetView.as_view(
+         CustomPasswordResetView.as_view(
              template_name="accounts/password_reset.html"
          ),
          name="password_reset"),
