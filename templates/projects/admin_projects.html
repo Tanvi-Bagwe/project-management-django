@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+    {% csrf_token %}
 
     <h5 class="mb-3">
         <i class="bi bi-folder"></i> All Projects
@@ -51,43 +53,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        let projectIdToDelete = null;
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const deleteBtn = document.getElementById("confirmDeleteBtn");
-
-            deleteBtn.onclick = function () {
-                if (projectIdToDelete) {
-                    executeDelete(projectIdToDelete);
-                }
-            };
-        });
-
-        function openDeleteModal(id) {
-            projectIdToDelete = id;
-            if (typeof bootstrap !== 'undefined') {
-                const modalElement = document.getElementById('deleteModal');
-                const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
-                modalInstance.show();
-            }
-        }
-
-        function executeDelete(id) {
-            fetch(`/projects/${id}/delete/`, {
-                method: "DELETE",
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                }
-            }).then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert("Something went wrong. Please contact system administrator");
-                }
-            });
-        }
-    </script>
+    <script src="{% static 'js/project_actions.js' %}"></script>
 
 {% endblock %}
