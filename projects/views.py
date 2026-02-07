@@ -10,10 +10,13 @@ from tasks.models import Task, TaskStatus, TaskPriority
 
 @login_required
 def project_detail(request, project_id):
+    # Get the project we clicked on, or show 404 if the ID is wrong
     project = get_object_or_404(Project, id=project_id)
 
+    # Grab all tasks linked to this specific project
     tasks = Task.objects.filter(project_id=project_id)
 
+    # Passing everything needed for the page and the "New Task" modal dropdowns
     return render(request, "projects/detail.html", {
         "project": project,
         "tasks": tasks,
@@ -25,19 +28,23 @@ def project_detail(request, project_id):
 
 @login_required
 def create_project(request):
+    # Only let users with the 'manager' role create new projects
     if request.user.profile.role != "manager":
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
-    name = request.POST.get("name", "").strip()
-    description = request.POST.get("description", "").strip()
-
-    if not name or not description:
-        return JsonResponse({
-            "success": False,
-            "message": "Project name and description are required."
-        }, status=400)
-
     if request.method == "POST":
+        # Pull name and description from the POST data and trim any extra spaces
+        name = request.POST.get("name", "").strip()
+        description = request.POST.get("description", "").strip()
+
+        # Basic check to make sure the user didn't leave the fields empty
+        if not name or not description:
+            return JsonResponse({
+                "success": False,
+                "message": "Project name and description are required."
+            }, status=400)
+
+        # Save the new project and link it to the person who created it
         project = Project.objects.create(
             name=name,
             description=description,
@@ -48,14 +55,18 @@ def create_project(request):
             "success": True,
             "project_id": project.id
         })
+
+    # Just in case someone tries a GET request on this URL
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 
 @login_required
 def admin_projects(request):
+    # This view is only for superusers (admins)
     if not request.user.is_superuser:
         return render(request, "403.html")
 
+    # List all projects in the system, newest ones first
     projects = Project.objects.all().order_by("-created_at")
     return render(request, "projects/admin_projects.html", {
         "projects": projects
@@ -65,11 +76,14 @@ def admin_projects(request):
 @login_required
 @require_http_methods(["DELETE"])
 def delete_project(request, project_id):
+    # Look for the project to delete
     project = get_object_or_404(Project, id=project_id)
 
+    # Safety check: Only the creator or an admin can delete a project
     if request.user != project.created_by and not request.user.is_superuser:
         return JsonResponse({"success": False, "message": "Unauthorized"}, status=403)
 
+    # Remove the project from the database
     project.delete()
 
     return JsonResponse({"success": True, "message": "Project deleted successfully"})
