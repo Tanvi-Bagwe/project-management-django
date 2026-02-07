@@ -27,7 +27,6 @@ def test_smtp(request):
     output.append(f"HOST: {host}")
     output.append(f"PORT: {port}")
     output.append(f"USER: {user}")
-    output.append(f"USER: {password}")
     output.append(f"PASSWORD: {'SET' if password else 'MISSING'}")
 
     if not all([host, port, user, password]):
